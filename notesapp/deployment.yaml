@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: my-note-app
-          image: your-dockerhub-username/my-note-app:latest   # Jenkins will replace this
+          image: sunainaraj/my-note-app:latest   # Jenkins will replace this
           ports:
             - containerPort: 8000
           env:
