@@ -1,11 +1,13 @@
-kind: Service                             
 apiVersion: v1
+kind: Service
 metadata:
-  name: todo-service
+  name: notesapp-service
 spec:
-  ports:
-    - port: 80                               
-      targetPort: 8000                
   selector:
-    app: todo-app                    
-  type: NodePort
+    app: notesapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer
+
