@@ -76,3 +76,42 @@ def createNote(request):
     )
     serializer = NoteSerializer(note, many=False)
     return Response(serializer.data)
+    # api/views.py
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from django.shortcuts import get_object_or_404
+from .models import Note, NoteFile
+from .serializers import NoteFileSerializer
+
+class NoteFileUploadView(APIView):
+    permission_classes = [permissions.AllowAny]  # match your existing policy
+
+    def post(self, request, pk):
+        note = get_object_or_404(Note, pk=pk)
+        files = request.FILES.getlist('files')
+        created_files = []
+        for f in files:
+            nf = NoteFile.objects.create(note=note, file=f)
+            created_files.append(nf)
+        return Response(
+            NoteFileSerializer(created_files, many=True).data,
+            status=status.HTTP_201_CREATED
+        )
+
+class NoteFileListView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, pk):
+        note = get_object_or_404(Note, pk=pk)
+        qs = note.files.order_by("-uploaded_at")
+        return Response(NoteFileSerializer(qs, many=True).data)
+
+class NoteFileDeleteView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def delete(self, request, file_id):
+        nf = get_object_or_404(NoteFile, pk=file_id)
+        nf.file.delete(save=False)  # delete from storage
+        nf.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
