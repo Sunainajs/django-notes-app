@@ -1,13 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: notesapp-service
+  name: my-note-app-service
 spec:
   selector:
-    app: notesapp
+    app: my-note-app
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8000
-  type: LoadBalancer
+    - name: http
+      protocol: TCP
+      port: 80         # Public access port
+      targetPort: 8000 # Django container port
+  type: LoadBalancer   # Exposes service externally (Cloud Provider will give public IP)
 
