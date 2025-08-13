@@ -1,11 +1,14 @@
 from django.urls import path
-from .views import *
+from . import views
+from .views import NoteFileUploadView, NoteFileListView, NoteFileDeleteView
 
 urlpatterns = [
-    path('', getRoutes, name="routes"),
-    path('notes/', getNotes, name="notes"),
-    path('notes/<str:pk>/update/', updateNote, name="update-note"),
-    path('notes/<str:pk>/delete/', deleteNote, name="delete-note"),
-    path('notes/create/', createNote, name="create-note"),
-    path('notes/<str:pk>/', getNote, name="note"),
+    # your existing endpoints
+    path('notes/', views.getNotes),
+    path('notes/<str:pk>/', views.getNote),
+
+    # NEW: file endpoints
+    path('notes/<int:pk>/files/', NoteFileListView.as_view(), name='note-file-list'),
+    path('notes/<int:pk>/files/upload/', NoteFileUploadView.as_view(), name='note-file-upload'),
+    path('files/<int:file_id>/', NoteFileDeleteView.as_view(), name='note-file-delete'),
 ]
